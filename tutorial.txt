@@ -1,0 +1,53 @@
+process for creating network topologies:
+
+1. choose number of nodes
+2. install few things on nodes
+	-> choose channel and set their attributes
+	-> install devices on channels
+	-> set rules for devices (protocols)
+3. server client communication or whatever
+		
+
+steps to code:
+1. LogComponentEnable
+
+2. take n number of computer nodes (creating nodes)
+=== NodeContainer nodes; nodes.Create(2);
+
+3. choose the technology to communicate (p2p, csma) the topology channels	
+	->set attributes (deviice and channel attributes)
+	=== PointToPointHelper p2p_obj;
+		p2p_obj.SetDeviceAttribute........
+
+
+4. install the channels/technology on the nodes that are created.
+=== NetDeviceContainer dev_obj;
+	dev_obj = p2p_obj.Install(nodes)
+
+5. ask the devices to follow the rules
+=== InternetStackHelper stack;
+	stack.Install(nodes);
+
+6. Assign the IP address to communicate
+=== Ipv4AddressHelper address;
+	address.SetBase("ip_address", "subnet mask");
+	Ipv4InterfaceContainer interfaces = address.Assign(devices);
+
+7.  Create x type of server on port x
+=== UdpEchoServerHelper echoServer(9);
+
+8. Install the server on a node, and start and stop server
+=== ApplicationContainer serverApps = echoServer.Install(nodes.Get(1));
+	serverApps.Start();
+	serverApps.Stop();
+
+9. Create x type of client and set its attributes
+=== UdpEchoClientHelper echoClient (interfaces.GetAddress(1), 9);
+	exhoClient.SetAttribute();
+
+10. Install the client on a node and start and stop
+=== ApplicationContainer clientApps = echoClient.Install(nodes.Get(0));
+	clientApps.Start();
+	clientApps.Stop();
+
+11. Finally run simulation;
